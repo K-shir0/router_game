@@ -32,9 +32,6 @@ class Node extends PositionComponent {
   final Packet self;
 
   @override
-  bool get debugMode => true;
-
-  @override
   Future<void>? onLoad() {
     super.onLoad();
 
@@ -93,9 +90,6 @@ class PacketComponent extends PositionComponent {
   final String id;
 
   @override
-  bool get debugMode => true;
-
-  @override
   void render(Canvas canvas) {
     canvas.drawCircle(
       Offset(width / 2, height / 2),
@@ -110,9 +104,6 @@ class NodeLine extends PositionComponent {
 
   final PositionComponent start;
   final PositionComponent end;
-
-  @override
-  bool get debugMode => true;
 
   @override
   void render(Canvas canvas) {
@@ -132,6 +123,9 @@ class MyGame extends FlameGame {
   ];
 
   late final Timer interval;
+
+  @override
+  bool get debugMode => true;
 
   @override
   Color backgroundColor() => const Color(0x00F2F2F2);
