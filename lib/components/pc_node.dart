@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
+import 'package:router_game_f/logger.dart';
 
 class PCNode extends PositionComponent {
   // TODO(k-shir0): 表示を figma に揃える
@@ -15,25 +16,44 @@ class PCNode extends PositionComponent {
     required this.self,
     this.defaultGatewayId,
     this.onTick,
+    this.timerInterval = 3,
+    this.routerInterval = 3,
   });
 
+  /// 識別するためのID
   final String id;
+
+  /// 自分自身の処理できるパケットのタイプ
   final Packet self;
+
+  /// パケットを次に送るID
   final String? defaultGatewayId;
 
+  /// 処理するパケットを保存しておく場所
   final List<Packet> packets = [];
+
+  /// 送られたパケットを保存しておくバッファ
   final List<Packet> buffer = [];
 
   void Function(PCNode node)? onTick;
 
-  /// パケットなどの生成に使用するタイマー
-  late final Timer _intervalTimer;
+  /// タイマーの動作間隔
+  final double timerInterval;
 
-  /// ルータの動作感覚
+  /// パケットなどの生成に使用するタイマー
+  late final Timer _timer;
+
+  /// ルータの動作間隔
+  final double routerInterval;
+
+  /// ルータの動作に使用するタイマー
   late final Timer _routerTimer;
 
-  late final TextComponent _packetLabel;
-  late final TextComponent _bufferLabel;
+  /// パケットの数を表示するラベル
+  late final TextComponent _packetCountLabel;
+
+  /// バッファの数を表示するラベル
+  late final TextComponent _bufferCountLabel;
 
   final _debugLabel = kDebugMode;
 
@@ -80,7 +100,7 @@ class PCNode extends PositionComponent {
       )..position = Vector2(width, 0);
       add(idLabel);
 
-      _packetLabel = TextComponent(
+      _packetCountLabel = TextComponent(
         text: 'packets: ${packets.length}',
         textRenderer: TextPaint(
           style: const TextStyle(
@@ -89,9 +109,9 @@ class PCNode extends PositionComponent {
           ),
         ),
       )..position = Vector2(width, 12);
-      add(_packetLabel);
+      add(_packetCountLabel);
 
-      _bufferLabel = TextComponent(
+      _bufferCountLabel = TextComponent(
         text: 'buffer: ${buffer.length}',
         textRenderer: TextPaint(
           style: const TextStyle(
@@ -100,17 +120,17 @@ class PCNode extends PositionComponent {
           ),
         ),
       )..position = Vector2(width, 24);
-      add(_bufferLabel);
+      add(_bufferCountLabel);
     }
 
-    _intervalTimer = Timer(
-      3,
+    _timer = Timer(
+      timerInterval,
       onTick: () => onTick?.call(this),
       repeat: true,
     );
 
     _routerTimer = Timer(
-      3,
+      routerInterval,
       onTick: _toNextHop,
       repeat: true,
     );
@@ -122,12 +142,12 @@ class PCNode extends PositionComponent {
   void update(double dt) {
     super.update(dt);
 
-    _intervalTimer.update(dt);
+    _timer.update(dt);
     _routerTimer.update(dt);
 
     if (_debugLabel) {
-      _packetLabel.text = 'packets: ${packets.length}';
-      _bufferLabel.text = 'buffer: ${buffer.length}';
+      _packetCountLabel.text = 'packets: ${packets.length}';
+      _bufferCountLabel.text = 'buffer: ${buffer.length}';
     }
   }
 
@@ -145,11 +165,10 @@ class PCNode extends PositionComponent {
         // 色と図形が一致しているか
         if (self.color == packet.color && self.shape == packet.shape) {
           // 一致
-          print('$id: 処理');
+          Logger.info('[$id] 一致');
         } else {
           // 次のノードにパケットを渡す
-
-          print('$id: バッファに追加');
+          Logger.info('[$id] 次のノード（バッファ）に渡す');
           nextHop.buffer.add(packet);
         }
       }
