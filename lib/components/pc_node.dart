@@ -40,9 +40,6 @@ class PCNode extends Node {
   /// ルータの動作に使用するタイマー
   late final Timer _routerTimer;
 
-  /// パケットの数を表示するラベル
-  late final TextComponent _packetCountLabel;
-
   /// バッファの数を表示するラベル
   late final TextComponent _bufferCountLabel;
 
@@ -109,17 +106,6 @@ class PCNode extends Node {
       )..position = Vector2(width, 0);
       add(idLabel);
 
-      _packetCountLabel = TextComponent(
-        text: 'packets: ${packets.length}',
-        textRenderer: TextPaint(
-          style: const TextStyle(
-            color: Colors.green,
-            fontSize: 12,
-          ),
-        ),
-      )..position = Vector2(width, 12);
-      add(_packetCountLabel);
-
       _bufferCountLabel = TextComponent(
         text: 'buffer: ${buffer.length}',
         textRenderer: TextPaint(
@@ -128,7 +114,7 @@ class PCNode extends Node {
             fontSize: 12,
           ),
         ),
-      )..position = Vector2(width, 24);
+      )..position = Vector2(width, 12);
       add(_bufferCountLabel);
 
       _resolvedPacketCountLabel = TextComponent(
@@ -139,7 +125,7 @@ class PCNode extends Node {
             fontSize: 12,
           ),
         ),
-      )..position = Vector2(width, 36);
+      )..position = Vector2(width, 24);
       add(_resolvedPacketCountLabel);
     }
 
@@ -166,7 +152,6 @@ class PCNode extends Node {
     _routerTimer.update(dt);
 
     if (_debugLabel) {
-      _packetCountLabel.text = 'packets: ${packets.length}';
       _bufferCountLabel.text = 'buffer: ${buffer.length}';
       _resolvedPacketCountLabel.text = 'resolved: $_resolvedPacketCount';
     }
@@ -178,11 +163,8 @@ class PCNode extends Node {
         .firstWhereOrNull((e) => e.id == defaultGatewayId);
 
     if (nextHop != null) {
-      packets.addAll(buffer);
-      buffer.clear();
-
       // 以下パケットの処理
-      for (final packet in packets) {
+      for (final packet in buffer) {
         // 色と図形が一致しているか
         if (self.color == packet.color && self.shape == packet.shape) {
           // 一致
@@ -198,7 +180,7 @@ class PCNode extends Node {
         }
       }
 
-      packets.clear();
+      buffer.clear();
     }
   }
 }
