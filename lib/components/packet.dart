@@ -5,31 +5,33 @@ import 'package:flutter/material.dart';
 enum Shape {
   square,
   circle,
+  triangle
 }
 
 class Packet extends Equatable {
   const Packet({
     required this.color,
     required this.shape,
-    this.dt,
+    // TODO(k-shir0): 空はまずいかも（未検証）
+    this.sourceId = '',
   });
 
   final Color color;
   final Shape shape;
-  final double? dt;
+  final String sourceId;
 
   @override
-  List<Object?> get props => [color, shape, dt];
+  List<Object?> get props => [color, shape, sourceId];
 
   Packet copyWith({
     Color? color,
     Shape? shape,
-    double? dt,
+    String? sourceId,
   }) {
     return Packet(
       color: color ?? this.color,
       shape: shape ?? this.shape,
-      dt: dt ?? this.dt,
+      sourceId: sourceId ?? this.sourceId,
     );
   }
 }

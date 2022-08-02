@@ -46,6 +46,11 @@ class PCNode extends Node {
   /// バッファの数を表示するラベル
   late final TextComponent _bufferCountLabel;
 
+  var _resolvedPacketCount = 0;
+
+  /// パケットの処理数を表示するラベル
+  late final TextComponent _resolvedPacketCountLabel;
+
   final _debugLabel = kDebugMode;
 
   @override
@@ -71,6 +76,19 @@ class PCNode extends Node {
       case Shape.circle:
         shape = CircleComponent(
           radius: width / 2,
+          paint: Paint()
+            ..color = self.color
+            ..style = PaintingStyle.fill,
+        );
+        break;
+      case Shape.triangle:
+        // TODO(k-shir0): 本当の正三角形ではない
+        shape = PolygonComponent(
+          [
+            Vector2(height / 2, 0),
+            Vector2(width, height),
+            Vector2(0, height),
+          ],
           paint: Paint()
             ..color = self.color
             ..style = PaintingStyle.fill,
@@ -112,6 +130,17 @@ class PCNode extends Node {
         ),
       )..position = Vector2(width, 24);
       add(_bufferCountLabel);
+
+      _resolvedPacketCountLabel = TextComponent(
+        text: 'resolved: $_resolvedPacketCount',
+        textRenderer: TextPaint(
+          style: const TextStyle(
+            color: Colors.green,
+            fontSize: 12,
+          ),
+        ),
+      )..position = Vector2(width, 36);
+      add(_resolvedPacketCountLabel);
     }
 
     _timer = Timer(
@@ -139,13 +168,14 @@ class PCNode extends Node {
     if (_debugLabel) {
       _packetCountLabel.text = 'packets: ${packets.length}';
       _bufferCountLabel.text = 'buffer: ${buffer.length}';
+      _resolvedPacketCountLabel.text = 'resolved: $_resolvedPacketCount';
     }
   }
 
   void _toNextHop() {
     final nextHop = parent?.children
         .query<Node>()
-        .firstWhereOrNull((element) => element.id == defaultGatewayId);
+        .firstWhereOrNull((e) => e.id == defaultGatewayId);
 
     if (nextHop != null) {
       packets.addAll(buffer);
@@ -157,10 +187,14 @@ class PCNode extends Node {
         if (self.color == packet.color && self.shape == packet.shape) {
           // 一致
           Logger.debug('[$id] パケット処理完了');
+          _resolvedPacketCount += 1;
         } else {
-          // 次のノードにパケットを渡す
-          Logger.debug('[$id] 送信 $packet to $nextHop');
-          nextHop.buffer.add(packet);
+          // TODO(k-shir0): 送信元チェック
+          if (packet.sourceId != nextHop.id) {
+            // 次のノードにパケットを渡す
+            Logger.debug('[$id] 送信 $packet to $nextHop');
+            nextHop.buffer.add(packet.copyWith(sourceId: id));
+          }
         }
       }
 
