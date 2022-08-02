@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 enum Shape {
   square,
   circle,
+  triangle
 }
 
 class Packet extends Equatable {

@@ -22,11 +22,11 @@ class ThreeNodeTwoRouter extends FlameGame {
           shape: Shape.square,
         ),
         defaultGatewayId: 'Router0',
-        // onTick: (node) {
-        //   node.buffer.add(
-        //     const Packet(color: Colors.purpleAccent, shape: Shape.square),
-        //   );
-        // },
+        onTick: (node) {
+          node.buffer.add(
+            const Packet(color: Colors.purpleAccent, shape: Shape.circle),
+          );
+        },
       )..position = Vector2(12, 100),
     );
 
@@ -49,6 +49,11 @@ class ThreeNodeTwoRouter extends FlameGame {
           shape: Shape.square,
         ),
         defaultGatewayId: 'Router0',
+        onTick: (node) {
+          node.buffer.add(
+            const Packet(color: Colors.purpleAccent, shape: Shape.circle),
+          );
+        },
       )..position = Vector2(200, 300),
     );
 
@@ -57,6 +62,8 @@ class ThreeNodeTwoRouter extends FlameGame {
         id: 'Router1',
         interfaces: [
           Interface(color: Colors.purpleAccent, connectedId: 'PC2'),
+          Interface(color: Colors.blue, connectedId: 'Router0'),
+          Interface(color: Colors.greenAccent, connectedId: 'Router0'),
         ],
       )..position = Vector2(0, 500),
     );
@@ -69,6 +76,11 @@ class ThreeNodeTwoRouter extends FlameGame {
           shape: Shape.circle,
         ),
         defaultGatewayId: 'Router1',
+        onTick: (node) {
+          node.buffer.add(
+            const Packet(color: Colors.blue, shape: Shape.square),
+          );
+        },
       )..position = Vector2(120, 600),
     );
   }

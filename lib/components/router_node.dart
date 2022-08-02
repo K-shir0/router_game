@@ -120,9 +120,11 @@ class RouterNode extends Node {
               .firstWhereOrNull((e) => e.id == interface.connectedId);
 
           if (nextHop != null) {
-            Logger.debug('[$id] 送信 to ${interface.connectedId}');
+            if (packet.sourceId != interface.connectedId) {
+              Logger.debug('[$id] 送信 to ${interface.connectedId}');
 
-            nextHop.buffer.add(packet);
+              nextHop.buffer.add(packet.copyWith(sourceId: id));
+            }
           }
         }
       }
