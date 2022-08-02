@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/logger.dart';
 
-class PCNode extends PositionComponent {
+class PCNode extends Node {
   // TODO(k-shir0): 表示を figma に揃える
 
   PCNode({
-    required this.id,
+    required super.id,
     required this.self,
     this.defaultGatewayId,
     this.onTick,
@@ -20,20 +20,11 @@ class PCNode extends PositionComponent {
     this.routerInterval = 3,
   });
 
-  /// 識別するためのID
-  final String id;
-
   /// 自分自身の処理できるパケットのタイプ
   final Packet self;
 
   /// パケットを次に送るID
   final String? defaultGatewayId;
-
-  /// 処理するパケットを保存しておく場所
-  final List<Packet> packets = [];
-
-  /// 送られたパケットを保存しておくバッファ
-  final List<Packet> buffer = [];
 
   void Function(PCNode node)? onTick;
 
@@ -153,27 +144,27 @@ class PCNode extends PositionComponent {
 
   void _toNextHop() {
     final nextHop = parent?.children
-        .query<PCNode>()
+        .query<Node>()
         .firstWhereOrNull((element) => element.id == defaultGatewayId);
 
-    packets.addAll(buffer);
-    buffer.clear();
-
     if (nextHop != null) {
+      packets.addAll(buffer);
+      buffer.clear();
+
       // 以下パケットの処理
       for (final packet in packets) {
         // 色と図形が一致しているか
         if (self.color == packet.color && self.shape == packet.shape) {
           // 一致
-          Logger.info('[$id] 一致');
+          Logger.debug('[$id] パケット処理完了');
         } else {
           // 次のノードにパケットを渡す
-          Logger.info('[$id] 次のノード（バッファ）に渡す');
+          Logger.debug('[$id] 送信 $packet to $nextHop');
           nextHop.buffer.add(packet);
         }
       }
+
+      packets.clear();
     }
-    // TODO(k-shir0): ここで clear するのはまずそう（未検証）
-    packets.clear();
   }
 }

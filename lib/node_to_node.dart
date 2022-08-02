@@ -3,11 +3,12 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
+import 'package:router_game_f/constants/constants.dart';
 
 /// 1ノードと1ノードのみを持つゲーム
 class NodeToNode extends FlameGame {
   @override
-  Color backgroundColor() => const Color(0x00F2F2F2);
+  Color backgroundColor() => GameColors.backgroundColor;
 
   @override
   Future<void>? onLoad() async {

@@ -33,12 +33,10 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
-  logger: ^1.1.0
 
 
 
 dev_dependencies:
-
   very_good_analysis: ^3.0.1
 
   flutter_test:
