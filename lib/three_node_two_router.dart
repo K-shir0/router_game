@@ -6,7 +6,7 @@ import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/components/interface.dart';
 import 'package:router_game_f/constants/constants.dart';
 
-class TwoNodeOneRouter extends FlameGame {
+class ThreeNodeTwoRouter extends FlameGame {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -22,12 +22,12 @@ class TwoNodeOneRouter extends FlameGame {
           shape: Shape.square,
         ),
         defaultGatewayId: 'Router0',
-        onTick: (node) {
-          node.buffer.add(
-            const Packet(color: Colors.greenAccent, shape: Shape.square),
-          );
-        },
-      )..position = Vector2(0, 100),
+        // onTick: (node) {
+        //   node.buffer.add(
+        //     const Packet(color: Colors.purpleAccent, shape: Shape.square),
+        //   );
+        // },
+      )..position = Vector2(12, 100),
     );
 
     await add(
@@ -36,8 +36,9 @@ class TwoNodeOneRouter extends FlameGame {
         interfaces: [
           Interface(color: Colors.blue, connectedId: 'PC0'),
           Interface(color: Colors.greenAccent, connectedId: 'PC1'),
+          Interface(color: Colors.purpleAccent, connectedId: 'Router1'),
         ],
-      )..position = Vector2(0, 300),
+      )..position = Vector2(0, 250),
     );
 
     await add(
@@ -48,21 +49,27 @@ class TwoNodeOneRouter extends FlameGame {
           shape: Shape.square,
         ),
         defaultGatewayId: 'Router0',
-        onTick: (node) {
-          node.buffer.add(
-            const Packet(color: Colors.blue, shape: Shape.square),
-          );
-        },
-      )..position = Vector2(200, 400),
+      )..position = Vector2(200, 300),
     );
 
-    return;
-  }
+    await add(
+      RouterNode(
+        id: 'Router1',
+        interfaces: [
+          Interface(color: Colors.purpleAccent, connectedId: 'PC2'),
+        ],
+      )..position = Vector2(0, 500),
+    );
 
-  @override
-  void update(double dt) {
-    super.update(dt);
-
-    children.query<PCNode>().map((e) => e.update(dt));
+    await add(
+      PCNode(
+        id: 'PC2',
+        self: const Packet(
+          color: Colors.purpleAccent,
+          shape: Shape.circle,
+        ),
+        defaultGatewayId: 'Router1',
+      )..position = Vector2(120, 600),
+    );
   }
 }

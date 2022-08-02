@@ -1,18 +1,22 @@
 import 'package:collection/collection.dart';
 
 import 'package:flame/components.dart';
-import 'package:flutter/foundation.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
+import 'package:router_game_f/components/interface.dart';
 import 'package:router_game_f/logger.dart';
 
 class RouterNode extends Node {
   RouterNode({
     required super.id,
+    required this.interfaces,
     this.routerInterval = 1,
   });
+
+  final List<Interface> interfaces;
 
   /// ルータの動作間隔
   final double routerInterval;
@@ -101,11 +105,6 @@ class RouterNode extends Node {
   }
 
   void _toNextHop() {
-    final interfaces = [
-      Interface(color: Colors.blue, connectedId: 'PC0'),
-      Interface(color: Colors.greenAccent, connectedId: 'PC1'),
-    ];
-
     packets.addAll(buffer);
     buffer.clear();
 
@@ -131,14 +130,4 @@ class RouterNode extends Node {
 
     packets.clear();
   }
-}
-
-class Interface {
-  Interface({
-    required this.color,
-    required this.connectedId,
-  });
-
-  final Color color;
-  final String connectedId;
 }

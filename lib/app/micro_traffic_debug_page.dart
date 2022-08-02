@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/app/micro_traffic_game_page.dart';
 import 'package:router_game_f/game.dart';
 import 'package:router_game_f/node_to_node.dart';
+import 'package:router_game_f/three_node_two_router.dart';
 import 'package:router_game_f/two_node_one_router.dart';
 
 class MicroTrafficDebugPage extends StatelessWidget {
@@ -42,6 +43,17 @@ class MicroTrafficDebugPage extends StatelessWidget {
               MaterialPageRoute<void>(
                 builder: (context) => MicroTrafficGamePage(
                   game: TwoNodeOneRouter(),
+                ),
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text('3ノードと2ルータ'),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (context) => MicroTrafficGamePage(
+                  game: ThreeNodeTwoRouter(),
                 ),
               ),
             ),
