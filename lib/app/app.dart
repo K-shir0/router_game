@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/app/micro_traffic_debug_page.dart';
-import 'package:router_game_f/app/micro_traffic_game_page.dart';
-import 'package:router_game_f/game.dart';
 
 class App extends StatelessWidget {
   const App({
@@ -15,11 +13,14 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final page = debugMode
-        ? const MicroTrafficDebugPage()
-        : MicroTrafficGamePage(game: MyGame());
+    // TODO(k-shir0): 常にデバッグモード起動なので本番時は切り替えるように変更
+    // const が付いていることに注意（削除すれば動く）
+    const page = MicroTrafficDebugPage();
+    // final page = debugMode
+    //     ? const MicroTrafficDebugPage()
+    //     : MicroTrafficGamePage(game: MyGame());
 
-    return MaterialApp(
+    return const MaterialApp(
       home: page,
     );
   }
