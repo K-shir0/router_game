@@ -1,20 +1,21 @@
 import 'package:collection/collection.dart';
 
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/logger.dart';
+import 'package:router_game_f/components/interface.dart';
 
-class PCNode extends Node {
-  // TODO(k-shir0): 表示を figma に揃える
-
+// TODO(k-shir0): 表示を figma に揃える
+class PCNode extends Node with TapCallbacks {
   PCNode({
     required super.id,
+    required super.interfaces,
+    super.maxNumberPortConnection = 1,
     required this.self,
-    this.defaultGatewayId,
     this.onTick,
     this.timerInterval = 3,
     this.routerInterval = 3,
@@ -22,9 +23,6 @@ class PCNode extends Node {
 
   /// 自分自身の処理できるパケットのタイプ
   final Packet self;
-
-  /// パケットを次に送るID
-  final String? defaultGatewayId;
 
   void Function(PCNode node)? onTick;
 
@@ -57,12 +55,29 @@ class PCNode extends Node {
   double get height => 48;
 
   @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size = Vector2(width, height);
+  }
+
+  @override
   Future<void>? onLoad() {
+    super.onLoad();
+
+    if (!isPortSetting(0)) {
+      // TODO(k-shir0): copyWith 使いたい
+      interfaces[0] = Interface(
+        color: self.color,
+        connectedId: null,
+        defaultGatewayId: null,
+      );
+    }
+
     final ShapeComponent shape;
 
     // ノードの形と色を決定
     switch (self.shape) {
-      case Shape.square:
+      case PacketShape.square:
         shape = RectangleComponent(
           size: Vector2(48, 48),
           paint: Paint()
@@ -70,7 +85,7 @@ class PCNode extends Node {
             ..style = PaintingStyle.fill,
         );
         break;
-      case Shape.circle:
+      case PacketShape.circle:
         shape = CircleComponent(
           radius: width / 2,
           paint: Paint()
@@ -78,7 +93,7 @@ class PCNode extends Node {
             ..style = PaintingStyle.fill,
         );
         break;
-      case Shape.triangle:
+      case PacketShape.triangle:
         // TODO(k-shir0): 本当の正三角形ではない
         shape = PolygonComponent(
           [
@@ -157,10 +172,23 @@ class PCNode extends Node {
     }
   }
 
+  @override
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+
+    // TODO(k-shir0): 複数存在する場合は考慮する
+    onConnect(portNumber: 0);
+  }
+
   void _toNextHop() {
+    // TODO(k-shir0): 複数存在する場合は考慮する
+    final interface = interfaces.firstOrNull;
+
+    if (interface == null) return;
+
     final nextHop = parent?.children
         .query<Node>()
-        .firstWhereOrNull((e) => e.id == defaultGatewayId);
+        .firstWhereOrNull((e) => e.id == interface.defaultGatewayId);
 
     if (nextHop != null) {
       // 以下パケットの処理
@@ -168,13 +196,11 @@ class PCNode extends Node {
         // 色と図形が一致しているか
         if (self.color == packet.color && self.shape == packet.shape) {
           // 一致
-          Logger.debug('[$id] パケット処理完了');
           _resolvedPacketCount += 1;
         } else {
           // TODO(k-shir0): 送信元チェック
           if (packet.sourceId != nextHop.id) {
             // 次のノードにパケットを渡す
-            Logger.debug('[$id] 送信 $packet to $nextHop');
             nextHop.buffer.add(packet.copyWith(sourceId: id));
           }
         }

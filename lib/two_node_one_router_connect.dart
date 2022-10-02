@@ -4,10 +4,9 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/components/interface.dart';
 import 'package:router_game_f/constants/constants.dart';
 
-class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
+class TwoNodeOneRouterConnect extends FlameGame with HasTappableComponents {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -22,36 +21,19 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
           color: Colors.blue,
           shape: PacketShape.square,
         ),
-        interfaces: [
-          Interface(
-            color: Colors.blue,
-            connectedId: 'Router0',
-            defaultGatewayId: 'Router0',
-          )
-        ],
         onTick: (node) {
           node.buffer.add(
             const Packet(color: Colors.greenAccent, shape: PacketShape.square),
           );
         },
+        interfaces: [],
       )..position = Vector2(0, 100),
     );
 
     await add(
       RouterNode(
         id: 'Router0',
-        interfaces: [
-          Interface(
-            color: Colors.blue,
-            connectedId: 'PC0',
-            defaultGatewayId: null,
-          ),
-          Interface(
-            color: Colors.greenAccent,
-            connectedId: 'PC1',
-            defaultGatewayId: null,
-          ),
-        ],
+        interfaces: [],
       )..position = Vector2(0, 300),
     );
 
@@ -62,18 +44,12 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
           color: Colors.greenAccent,
           shape: PacketShape.square,
         ),
-        interfaces: [
-          Interface(
-            color: Colors.greenAccent,
-            connectedId: 'Router0',
-            defaultGatewayId: 'Router0',
-          )
-        ],
         onTick: (node) {
           node.buffer.add(
             const Packet(color: Colors.blue, shape: PacketShape.square),
           );
         },
+        interfaces: [],
       )..position = Vector2(200, 400),
     );
 

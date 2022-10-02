@@ -2,11 +2,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:flutter/material.dart';
 
-enum Shape {
-  square,
-  circle,
-  triangle
-}
+enum PacketShape { square, circle, triangle }
 
 class Packet extends Equatable {
   const Packet({
@@ -17,7 +13,7 @@ class Packet extends Equatable {
   });
 
   final Color color;
-  final Shape shape;
+  final PacketShape shape;
   final String sourceId;
 
   @override
@@ -25,7 +21,7 @@ class Packet extends Equatable {
 
   Packet copyWith({
     Color? color,
-    Shape? shape,
+    PacketShape? shape,
     String? sourceId,
   }) {
     return Packet(

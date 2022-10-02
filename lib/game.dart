@@ -200,12 +200,7 @@ class MyGame extends FlameGame {
     interval.update(dt);
 
     final nodes = children.query<Node>();
-    // final texts = children.query<TextComponent>();
-    // final totalPackets =
-    // nodes.map((node) => node.packets.length).reduce((a, b) => a + b);
-    // texts[1].text = totalPackets.toString();
 
-    // final totalBuffers = nodes.map((node) => node.buffer.length).reduce((a, b) => a + b);
     for (final node in nodes) {
       if (node.packets.isEmpty) {
         continue;
