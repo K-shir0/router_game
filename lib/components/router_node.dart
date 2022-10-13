@@ -1,22 +1,22 @@
 import 'package:collection/collection.dart';
 
 import 'package:flame/components.dart';
+import 'package:flame/experimental.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/components/interface.dart';
+import 'package:router_game_f/components/router_number.dart';
 import 'package:router_game_f/logger.dart';
 
-class RouterNode extends Node {
+class RouterNode extends Node with TapCallbacks {
   RouterNode({
     required super.id,
-    required this.interfaces,
+    required super.interfaces,
+    super.maxNumberPortConnection = 4,
     this.routerInterval = 1,
   });
-
-  final List<Interface> interfaces;
 
   /// ルータの動作間隔
   final double routerInterval;
@@ -36,7 +36,15 @@ class RouterNode extends Node {
   double get height => 72;
 
   @override
+  void onGameResize(Vector2 size) {
+    super.onGameResize(size);
+    this.size = Vector2(width, height);
+  }
+
+  @override
   Future<void>? onLoad() async {
+    await super.onLoad();
+
     await add(
       CircleComponent(
         radius: width / 2,
@@ -89,7 +97,38 @@ class RouterNode extends Node {
     }
   }
 
+  @override
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+
+    // TODO(k-shir0): PC -> Router の順番で設定できるが
+    // Router -> PC の順番では設定できない。色の設定を行わないと行けないため。
+    Logger.debug('ボタンの追加');
+
+    final routerNumber = <RouterNumber>[];
+
+    routerNumber.addAll([
+      for (var i = 0; i < maxNumberPortConnection; i++)
+        RouterNumber(
+          portNumber: i,
+          onTap: (event) {
+            // タップしたときにメニューを削除
+            removeAll(routerNumber);
+
+            onConnect(portNumber: i);
+
+            Logger.debug(interfaces[0].defaultGatewayId.toString());
+          },
+        )..position = Vector2(x + width, 0 + (i * 18)),
+    ]);
+
+    addAll(routerNumber);
+  }
+
   void _toNextHop() {
+    // TODO(k-shir0): 色が null なのか
+    // Logger.debug(interfaces.toString());
+
     // パケット毎インターフェース毎にパケットが一致してるか検査
     // 1. パケットの色とインターフェースの色が一致していれば [connectedId] に送信
     // 2. 次のインターフェースで検査インターフェースがすべてチェック完了するまで 1 を繰り返す
