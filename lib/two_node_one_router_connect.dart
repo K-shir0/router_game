@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/constants/constants.dart';
 
-class TwoNodeOneRouterConnect extends FlameGame with HasTappableComponents {
+class TwoNodeOneRouterConnect extends FlameGame
+    with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 

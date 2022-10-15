@@ -4,7 +4,6 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/components/interface.dart';
 import 'package:router_game_f/constants/constants.dart';
 
 class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
@@ -23,7 +22,8 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
           shape: PacketShape.square,
         ),
         interfaces: [
-          Interface(
+          const Interface(
+            id: 'P0-0',
             color: Colors.blue,
             connectedId: 'Router0',
             defaultGatewayId: 'Router0',
@@ -41,12 +41,14 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
       RouterNode(
         id: 'Router0',
         interfaces: [
-          Interface(
+          const Interface(
+            id: 'R0-0',
             color: Colors.blue,
             connectedId: 'PC0',
             defaultGatewayId: null,
           ),
-          Interface(
+          const Interface(
+            id: 'R0-1',
             color: Colors.greenAccent,
             connectedId: 'PC1',
             defaultGatewayId: null,
@@ -63,7 +65,8 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
           shape: PacketShape.square,
         ),
         interfaces: [
-          Interface(
+          const Interface(
+            id: 'P1-0',
             color: Colors.greenAccent,
             connectedId: 'Router0',
             defaultGatewayId: 'Router0',
