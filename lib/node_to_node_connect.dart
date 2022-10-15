@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
 
@@ -11,6 +12,8 @@ import 'package:router_game_f/logger.dart';
 String? selectedId;
 
 int? selectedPortNumber;
+
+Component? selectedInfo;
 
 class NodeToNodeConnect extends FlameGame with HasTappableComponents {
   @override

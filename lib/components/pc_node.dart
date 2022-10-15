@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/components/interface.dart';
 
 // TODO(k-shir0): 表示を figma に揃える
 class PCNode extends Node with TapCallbacks {
@@ -15,6 +14,7 @@ class PCNode extends Node with TapCallbacks {
     required super.id,
     required super.interfaces,
     super.maxNumberPortConnection = 1,
+    super.interfaceColorOverrideGuard = true,
     required this.self,
     this.onTick,
     this.timerInterval = 3,
@@ -66,11 +66,7 @@ class PCNode extends Node with TapCallbacks {
 
     if (!isPortSetting(0)) {
       // TODO(k-shir0): copyWith 使いたい
-      interfaces[0] = Interface(
-        color: self.color,
-        connectedId: null,
-        defaultGatewayId: null,
-      );
+      interfaces[0] = interfaces[0].copyWith(color: self.color);
     }
 
     final ShapeComponent shape;

@@ -75,7 +75,7 @@ class RouterNode extends Node with TapCallbacks {
             fontSize: 12,
           ),
         ),
-      )..position = Vector2(width, 24);
+      )..position = Vector2(width, 12);
       await add(_bufferCountLabel);
     }
 
@@ -101,10 +101,6 @@ class RouterNode extends Node with TapCallbacks {
   void onTapDown(TapDownEvent event) {
     super.onTapDown(event);
 
-    // TODO(k-shir0): PC -> Router の順番で設定できるが
-    // Router -> PC の順番では設定できない。色の設定を行わないと行けないため。
-    Logger.debug('ボタンの追加');
-
     final routerNumber = <RouterNumber>[];
 
     routerNumber.addAll([
@@ -126,9 +122,6 @@ class RouterNode extends Node with TapCallbacks {
   }
 
   void _toNextHop() {
-    // TODO(k-shir0): 色が null なのか
-    // Logger.debug(interfaces.toString());
-
     // パケット毎インターフェース毎にパケットが一致してるか検査
     // 1. パケットの色とインターフェースの色が一致していれば [connectedId] に送信
     // 2. 次のインターフェースで検査インターフェースがすべてチェック完了するまで 1 を繰り返す
