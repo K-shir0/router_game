@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/constants/constants.dart';
 
-class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
+class TwoNodeOneRouter extends FlameGame
+    with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -17,7 +18,7 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC0',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.blue,
           shape: PacketShape.square,
         ),
@@ -31,7 +32,10 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
         ],
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.greenAccent, shape: PacketShape.square),
+            const PacketData(
+              color: Colors.greenAccent,
+              shape: PacketShape.square,
+            ),
           );
         },
       )..position = Vector2(0, 100),
@@ -60,7 +64,7 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC1',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.greenAccent,
           shape: PacketShape.square,
         ),
@@ -74,7 +78,7 @@ class TwoNodeOneRouter extends FlameGame with HasTappableComponents {
         ],
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.blue, shape: PacketShape.square),
+            const PacketData(color: Colors.blue, shape: PacketShape.square),
           );
         },
       )..position = Vector2(200, 400),

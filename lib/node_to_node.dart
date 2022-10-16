@@ -7,7 +7,7 @@ import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/constants/constants.dart';
 
 /// 1ノードと1ノードのみを持つゲーム
-class NodeToNode extends FlameGame with HasTappableComponents {
+class NodeToNode extends FlameGame with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -17,7 +17,7 @@ class NodeToNode extends FlameGame with HasTappableComponents {
 
     final pc0 = PCNode(
       id: 'PC0',
-      self: const Packet(
+      self: const PacketData(
         color: Colors.red,
         shape: PacketShape.square,
       ),
@@ -31,14 +31,14 @@ class NodeToNode extends FlameGame with HasTappableComponents {
       ],
       onTick: (node) {
         node.buffer.add(
-          const Packet(color: Colors.red, shape: PacketShape.circle),
+          const PacketData(color: Colors.red, shape: PacketShape.circle),
         );
       },
     )..position = Vector2(0, 100);
 
     final pc1 = PCNode(
       id: 'PC1',
-      self: const Packet(
+      self: const PacketData(
         color: Colors.red,
         shape: PacketShape.circle,
       ),

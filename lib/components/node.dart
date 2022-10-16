@@ -25,7 +25,9 @@ class Node extends PositionComponent with Hoverable {
   final List<Interface> interfaces;
 
   /// 送られたパケットを保存しておくバッファ
-  final List<Packet> buffer = [];
+  final List<PacketData> buffer = [];
+
+  final List<PacketView> _bufferTable = [];
 
   /// ポートの最大接続数
   final int maxNumberPortConnection;
@@ -247,6 +249,21 @@ class Node extends PositionComponent with Hoverable {
       );
 
       parent?.remove(cable);
+    }
+  }
+
+  void onBuffer() {
+    removeAll(_bufferTable);
+    _bufferTable.clear();
+
+    for (var i = 0; i < buffer.length; i++) {
+      final packetView = PacketView(data: buffer[i])
+        ..position =
+            Vector2(width + (24 * (i % 5) + 2 * ((i % 5) + 1)), (i ~/ 5) * 26)
+        ..size = Vector2(24, 24);
+
+      _bufferTable.add(packetView);
+      add(packetView);
     }
   }
 

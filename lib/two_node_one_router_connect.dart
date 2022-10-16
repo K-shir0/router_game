@@ -18,13 +18,16 @@ class TwoNodeOneRouterConnect extends FlameGame
     await add(
       PCNode(
         id: 'PC0',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.blue,
           shape: PacketShape.square,
         ),
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.greenAccent, shape: PacketShape.square),
+            const PacketData(
+              color: Colors.greenAccent,
+              shape: PacketShape.square,
+            ),
           );
         },
         interfaces: [],
@@ -41,13 +44,13 @@ class TwoNodeOneRouterConnect extends FlameGame
     await add(
       PCNode(
         id: 'PC1',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.greenAccent,
           shape: PacketShape.square,
         ),
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.blue, shape: PacketShape.square),
+            const PacketData(color: Colors.blue, shape: PacketShape.square),
           );
         },
         interfaces: [],
