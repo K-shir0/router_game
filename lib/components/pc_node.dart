@@ -22,7 +22,7 @@ class PCNode extends Node with TapCallbacks {
   });
 
   /// 自分自身の処理できるパケットのタイプ
-  final Packet self;
+  final PacketData self;
 
   void Function(PCNode node)? onTick;
 
@@ -142,7 +142,7 @@ class PCNode extends Node with TapCallbacks {
 
     _timer = Timer(
       timerInterval,
-      onTick: () => onTick?.call(this),
+      onTick: () => {onTick?.call(this), onBuffer()},
       repeat: true,
     );
 
@@ -196,13 +196,25 @@ class PCNode extends Node with TapCallbacks {
         } else {
           // TODO(k-shir0): 送信元チェック
           if (packet.sourceId != nextHop.id) {
-            // 次のノードにパケットを渡す
-            nextHop.buffer.add(packet.copyWith(sourceId: id));
+            parent?.add(
+              PacketComponent(
+                data: packet,
+                from: center,
+                to: nextHop.center,
+                onComplete: () {
+                  // 次のノードにパケットを渡す
+                  nextHop.buffer.add(packet.copyWith(sourceId: id));
+                  nextHop.onBuffer();
+                },
+              ),
+            );
           }
         }
       }
 
       buffer.clear();
     }
+
+    onBuffer();
   }
 }

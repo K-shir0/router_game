@@ -15,7 +15,8 @@ int? selectedPortNumber;
 
 Component? selectedInfo;
 
-class NodeToNodeConnect extends FlameGame with HasTappableComponents {
+class NodeToNodeConnect extends FlameGame
+    with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -33,13 +34,13 @@ class NodeToNodeConnect extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC0',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.blue,
           shape: PacketShape.square,
         ),
         onTick: (node) {
           node.buffer.add(
-            const Packet(
+            const PacketData(
               color: Colors.blue,
               shape: PacketShape.circle,
             ),
@@ -52,7 +53,7 @@ class NodeToNodeConnect extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC1',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.blue,
           shape: PacketShape.circle,
         ),

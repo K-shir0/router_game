@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/components/router_number.dart';
 import 'package:router_game_f/logger.dart';
 
 class RouterNode extends Node with TapCallbacks {
@@ -137,7 +136,18 @@ class RouterNode extends Node with TapCallbacks {
             if (packet.sourceId != interface.connectedId) {
               Logger.debug('[$id] 送信 to ${interface.connectedId}');
 
-              nextHop.buffer.add(packet.copyWith(sourceId: id));
+              parent?.add(
+                PacketComponent(
+                  data: packet,
+                  from: center,
+                  to: nextHop.center,
+                  onComplete: () {
+                    // 次のノードにパケットを渡す
+                    nextHop.buffer.add(packet.copyWith(sourceId: id));
+                    nextHop.onBuffer();
+                  },
+                ),
+              );
             }
           }
         }
@@ -145,5 +155,6 @@ class RouterNode extends Node with TapCallbacks {
     }
 
     buffer.clear();
+    onBuffer();
   }
 }

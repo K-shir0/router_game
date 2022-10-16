@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/constants/constants.dart';
 
-class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
+class ThreeNodeTwoRouter extends FlameGame
+    with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
 
@@ -17,7 +18,7 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC0',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.blue,
           shape: PacketShape.square,
         ),
@@ -31,7 +32,10 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
         ],
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.purpleAccent, shape: PacketShape.circle),
+            const PacketData(
+              color: Colors.purpleAccent,
+              shape: PacketShape.circle,
+            ),
           );
         },
       )..position = Vector2(12, 100),
@@ -66,7 +70,7 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC1',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.greenAccent,
           shape: PacketShape.square,
         ),
@@ -80,7 +84,10 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
         ],
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.purpleAccent, shape: PacketShape.circle),
+            const PacketData(
+              color: Colors.purpleAccent,
+              shape: PacketShape.circle,
+            ),
           );
         },
       )..position = Vector2(200, 300),
@@ -115,7 +122,7 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
     await add(
       PCNode(
         id: 'PC2',
-        self: const Packet(
+        self: const PacketData(
           color: Colors.purpleAccent,
           shape: PacketShape.circle,
         ),
@@ -129,7 +136,7 @@ class ThreeNodeTwoRouter extends FlameGame with HasTappableComponents {
         ],
         onTick: (node) {
           node.buffer.add(
-            const Packet(color: Colors.blue, shape: PacketShape.square),
+            const PacketData(color: Colors.blue, shape: PacketShape.square),
           );
         },
       )..position = Vector2(120, 600),

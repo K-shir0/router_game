@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 enum PacketShape { square, circle, triangle }
 
-class Packet extends Equatable {
-  const Packet({
+class PacketData extends Equatable {
+  const PacketData({
     required this.color,
     required this.shape,
     // TODO(k-shir0): 空はまずいかも（未検証）
@@ -19,12 +19,12 @@ class Packet extends Equatable {
   @override
   List<Object?> get props => [color, shape, sourceId];
 
-  Packet copyWith({
+  PacketData copyWith({
     Color? color,
     PacketShape? shape,
     String? sourceId,
   }) {
-    return Packet(
+    return PacketData(
       color: color ?? this.color,
       shape: shape ?? this.shape,
       sourceId: sourceId ?? this.sourceId,
