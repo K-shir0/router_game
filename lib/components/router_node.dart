@@ -1,13 +1,18 @@
 import 'package:collection/collection.dart';
 
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame/experimental.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:router_game_f/components/color_button.dart';
 import 'package:router_game_f/components/components.dart';
+import 'package:router_game_f/components/interface_infomation.dart';
 import 'package:router_game_f/logger.dart';
+
+bool isHovering = false;
 
 class RouterNode extends Node with TapCallbacks {
   RouterNode({
@@ -19,6 +24,8 @@ class RouterNode extends Node with TapCallbacks {
 
   /// ルータの動作間隔
   final double routerInterval;
+
+  final List<PositionComponent> _hoverInfo = [];
 
   /// ルータの動作に使用するタイマー
   late final Timer _routerTimer;
@@ -114,10 +121,70 @@ class RouterNode extends Node with TapCallbacks {
 
             Logger.debug(interfaces[0].defaultGatewayId.toString());
           },
-        )..position = Vector2(x + width, 0 + (i * 18)),
+        )..position = Vector2(width, 0 + (i * 18)),
     ]);
 
     addAll(routerNumber);
+  }
+
+  @override
+  bool onHoverEnter(PointerHoverInfo info) {
+    super.onHoverEnter(info);
+
+    isHovering = true;
+
+    if (_hoverInfo.isEmpty) {
+      final hoverWidth = -width * 1.4 - 4;
+
+      _hoverInfo
+        ..addAll([
+          // 背景
+          InterfaceInformation(onLeave: _hiveInterfaceInfo)
+            ..position = Vector2(hoverWidth, 0),
+          for (var i = 0; i < interfaces.length; i++) ...[
+            TextComponent(
+              text: '$i',
+              textRenderer: TextPaint(
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+            )..position = Vector2(hoverWidth, (40.0 * i)),
+            ColorButton(
+              currentColor: interfaces[i].color,
+              onTap: (color) => {
+                print('test'),
+                interfaces[i] = interfaces[i].copyWith(color: color),
+              },
+            )..position = Vector2(hoverWidth, 18 + (40.0 * i))
+          ]
+        ])
+        ..map(add).toList();
+    }
+
+    return true;
+  }
+
+  @override
+  bool onHoverLeave(PointerHoverInfo info) {
+    super.onHoverLeave(info);
+
+    isHovering = false;
+
+    _hiveInterfaceInfo();
+
+    return true;
+  }
+
+  void _hiveInterfaceInfo() {
+    Future.delayed(const Duration(milliseconds: 100), () {
+      // ホバーしているかどうか
+      if (!isHovering && _hoverInfo.isNotEmpty) {
+        _hoverInfo.map(remove).toList();
+        _hoverInfo.clear();
+      }
+    });
   }
 
   void _toNextHop() {

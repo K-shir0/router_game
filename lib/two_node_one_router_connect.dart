@@ -4,12 +4,32 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
+import 'package:router_game_f/components/router_add_button.dart';
 import 'package:router_game_f/constants/constants.dart';
+import 'package:uuid/uuid.dart';
 
 class TwoNodeOneRouterConnect extends FlameGame
     with HasTappableComponents, HasHoverables {
   @override
   Color backgroundColor() => GameColors.backgroundColor;
+
+  @override
+  void onTapDown(TapDownEvent event) {
+    super.onTapDown(event);
+
+    if (routerAddMode) {
+      // モードで分ける
+      add(
+        RouterNode(
+          id: const Uuid().v4(),
+          interfaces: [],
+        )
+          ..position = event.canvasPosition - Vector2(72, 72) / 2,
+      );
+
+      routerAddMode = false;
+    }
+  }
 
   @override
   Future<void>? onLoad() async {
@@ -55,6 +75,10 @@ class TwoNodeOneRouterConnect extends FlameGame
         },
         interfaces: [],
       )..position = Vector2(200, 400),
+    );
+
+    await add(
+      RouterAddButton()..position = Vector2(0, 0),
     );
 
     return;
