@@ -134,7 +134,7 @@ class RouterNode extends Node with TapCallbacks {
     isHovering = true;
 
     if (_hoverInfo.isEmpty) {
-      double hoverWidth = -width * 1.4 - 4;
+      final hoverWidth = -width * 1.4 - 4;
 
       _hoverInfo
         ..addAll([
