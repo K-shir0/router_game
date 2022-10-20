@@ -5,7 +5,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
-import 'package:router_game_f/constants/constants.dart';
+import 'package:router_game_f/constants.dart';
 import 'package:router_game_f/logger.dart';
 
 /// ノードの選択に使う変数

@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:router_game_f/components/color_button.dart';
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/components/interface_infomation.dart';
+import 'package:router_game_f/components/routing_item.dart';
+import 'package:router_game_f/constants.dart';
 import 'package:router_game_f/logger.dart';
 
 bool isHovering = false;
@@ -25,12 +27,14 @@ class RouterNode extends Node with TapCallbacks {
   /// ルータの動作間隔
   final double routerInterval;
 
+  final List<RoutingItem> routingTable = [];
+
   final List<PositionComponent> _hoverInfo = [];
 
   /// ルータの動作に使用するタイマー
   late final Timer _routerTimer;
 
-  /// バッファの数を表示するラベル
+  /// バッファの数を表示するデバッグ用ラベル
   late final TextComponent _bufferCountLabel;
 
   final _debugLabel = kDebugMode;
@@ -143,32 +147,81 @@ class RouterNode extends Node with TapCallbacks {
       );
 
       for (var i = 0; i < interfaces.length; i++) {
-        final colorButtonWidth = hoverWidth + 4;
+        var colorButtonWidth = hoverWidth + 4;
+        final buttonHeight = 26 + (52.0 * i);
 
         // ラベル と インターフェースカラーを追加
-        _hoverInfo
-          ..add(
-            TextComponent(
-              text: '$i',
-              textRenderer: TextPaint(
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+        _hoverInfo.add(
+          TextComponent(
+            text: '$i',
+            textRenderer: TextPaint(
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
-            )..position = Vector2(colorButtonWidth, 8 + (52.0 * i)),
-          )
-          ..add(
+            ),
+          )..position = Vector2(colorButtonWidth, 8 + (52.0 * i)),
+        );
+
+        final button = ColorButton(
+          currentColor: interfaces[i].color,
+          onTap: (color) {
+            interfaces[i] = color == null
+                ? interfaces[i].colorReset()
+                : interfaces[i].copyWith(color: color);
+          },
+        )..position = Vector2(colorButtonWidth, buttonHeight);
+        _hoverInfo.add(button);
+
+        colorButtonWidth += 28;
+
+        final routingItemByInterface = routingTable
+            .where((element) => element.outputInterfaceNumber == i)
+            .toList();
+
+        for (var i = 0; i < routingItemByInterface.length; i++) {
+          final routingItem = routingItemByInterface[i];
+
+          _hoverInfo.add(
             ColorButton(
-              currentColor: interfaces[i].color,
-              onTap: (color) {
-                interfaces[i] = color == null
-                    ? interfaces[i].colorReset()
-                    : interfaces[i].copyWith(color: color);
-              },
-            )..position = Vector2(colorButtonWidth, 26 + (52.0 * i)),
+                currentColor: routingItem.color,
+                onTap: (color) {
+                  final newItem = RoutingItem(
+                    color: color ?? Colors.transparent,
+                    outputInterfaceNumber: i,
+                  );
+
+                  routingTable
+                    ..removeWhere(
+                      (element) => element == routingItem || element == newItem,
+                    )
+                    ..add(newItem);
+                })
+              ..position = Vector2(colorButtonWidth, buttonHeight),
           );
+
+          colorButtonWidth += 28;
+        }
+
+        // 追加用
+        _hoverInfo.add(
+          ColorButton(
+              currentColor: Colors.transparent,
+              onTap: (color) {
+                final newItem = RoutingItem(
+                  color: color ?? Colors.transparent,
+                  outputInterfaceNumber: i,
+                );
+
+                routingTable
+                  ..removeWhere(
+                    (element) => element == newItem,
+                  )
+                  ..add(newItem);
+              })
+            ..position = Vector2(colorButtonWidth, buttonHeight),
+        );
       }
 
       addAll(_hoverInfo);
@@ -189,7 +242,7 @@ class RouterNode extends Node with TapCallbacks {
   }
 
   void _hiveInterfaceInfo() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+    Future.delayed(GameConstants.hoverUiDuration, () {
       // ホバーしているかどうか
       if (!isHovering && _hoverInfo.isNotEmpty) {
         _hoverInfo.map(remove).toList();
@@ -204,7 +257,9 @@ class RouterNode extends Node with TapCallbacks {
     // 2. 次のインターフェースで検査インターフェースがすべてチェック完了するまで 1 を繰り返す
     // 3. すべて精査し一致していなければパケットを破棄
     for (final packet in buffer) {
-      for (final interface in interfaces) {
+      for (var i = 0; i < interfaces.length; i++) {
+        final interface = interfaces[i];
+
         if (interface.color == packet.color) {
           final nextHop = parent?.children
               .query<Node>()
@@ -226,6 +281,36 @@ class RouterNode extends Node with TapCallbacks {
                   },
                 ),
               );
+            }
+          }
+        }
+
+        final interfaceItem =
+            routingTable.where((e) => e.outputInterfaceNumber == i);
+
+        for (final item in interfaceItem) {
+          if (item.color == packet.color) {
+            final nextHop = parent?.children
+                .query<Node>()
+                .firstWhereOrNull((e) => e.id == interface.connectedId);
+
+            if (nextHop != null) {
+              if (packet.sourceId != interface.connectedId) {
+                Logger.debug('[$id] 送信 to ${interface.connectedId}');
+
+                parent?.add(
+                  PacketComponent(
+                    data: packet,
+                    from: center,
+                    to: nextHop.center,
+                    onComplete: () {
+                      // 次のノードにパケットを渡す
+                      nextHop.buffer.add(packet.copyWith(sourceId: id));
+                      nextHop.onBuffer();
+                    },
+                  ),
+                );
+              }
             }
           }
         }

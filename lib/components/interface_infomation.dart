@@ -23,19 +23,16 @@ class InterfaceInformation extends PositionComponent with Hoverable {
   }
 
   @override
-  Future<void>? onLoad() {
-    super.onLoad();
+  void render(Canvas canvas) {
+    super.render(canvas);
 
-    add(
-      RectangleComponent(
-        size: Vector2(width, height),
-        paint: Paint()
-          ..color = const Color(0xFFE5E6E6)
-          ..style = PaintingStyle.fill,
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(0, 0, width, height),
+        const Radius.circular(6),
       ),
+      Paint()..color = const Color(0xFFE5E6E6),
     );
-
-    return null;
   }
 
   @override

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:router_game_f/components/components.dart';
 import 'package:router_game_f/components/router_add_button.dart';
-import 'package:router_game_f/constants/constants.dart';
+import 'package:router_game_f/constants.dart';
 import 'package:uuid/uuid.dart';
 
 class TwoNodeOneRouterConnect extends FlameGame
