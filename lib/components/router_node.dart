@@ -136,31 +136,39 @@ class RouterNode extends Node with TapCallbacks {
     if (_hoverInfo.isEmpty) {
       final hoverWidth = -width * 1.4 - 4;
 
-      _hoverInfo
-        ..addAll([
-          // 背景
-          InterfaceInformation(onLeave: _hiveInterfaceInfo)
-            ..position = Vector2(hoverWidth, 0),
-          for (var i = 0; i < interfaces.length; i++) ...[
+      _hoverInfo.add(
+        // 背景
+        InterfaceInformation(onLeave: _hiveInterfaceInfo)
+          ..position = Vector2(hoverWidth, 0),
+      );
+
+      for (var i = 0; i < interfaces.length; i++) {
+        final colorButtonWidth = hoverWidth + 4;
+
+        // ラベル と インターフェースカラーを追加
+        _hoverInfo
+          ..add(
             TextComponent(
               text: '$i',
               textRenderer: TextPaint(
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 16,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            )..position = Vector2(hoverWidth, (40.0 * i)),
+            )..position = Vector2(colorButtonWidth, 8 + (52.0 * i)),
+          )
+          ..add(
             ColorButton(
               currentColor: interfaces[i].color,
-              onTap: (color) => {
-                print('test'),
-                interfaces[i] = interfaces[i].copyWith(color: color),
-              },
-            )..position = Vector2(hoverWidth, 18 + (40.0 * i))
-          ]
-        ])
-        ..map(add).toList();
+              onTap: (color) =>
+                  {interfaces[i] = interfaces[i].copyWith(color: color)},
+            )..position = Vector2(colorButtonWidth, 26 + (52.0 * i)),
+          );
+      }
+
+      addAll(_hoverInfo);
     }
 
     return true;

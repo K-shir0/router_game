@@ -14,7 +14,7 @@ class InterfaceInformation extends PositionComponent with Hoverable {
   double get width => 100;
 
   @override
-  double get height => 300;
+  double get height => 216;
 
   @override
   void onGameResize(Vector2 size) {
@@ -30,7 +30,7 @@ class InterfaceInformation extends PositionComponent with Hoverable {
       RectangleComponent(
         size: Vector2(width, height),
         paint: Paint()
-          ..color = Colors.grey
+          ..color = const Color(0xFFE5E6E6)
           ..style = PaintingStyle.fill,
       ),
     );
