@@ -162,8 +162,11 @@ class RouterNode extends Node with TapCallbacks {
           ..add(
             ColorButton(
               currentColor: interfaces[i].color,
-              onTap: (color) =>
-                  {interfaces[i] = interfaces[i].copyWith(color: color)},
+              onTap: (color) {
+                interfaces[i] = color == null
+                    ? interfaces[i].colorReset()
+                    : interfaces[i].copyWith(color: color);
+              },
             )..position = Vector2(colorButtonWidth, 26 + (52.0 * i)),
           );
       }

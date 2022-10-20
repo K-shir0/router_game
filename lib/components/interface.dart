@@ -42,6 +42,15 @@ class Interface extends Equatable {
     );
   }
 
+  Interface colorReset() {
+    return Interface(
+      id: id,
+      color: null,
+      connectedId: connectedId,
+      defaultGatewayId: defaultGatewayId,
+    );
+  }
+
   Interface copyWith({
     String? id,
     Color? color,
