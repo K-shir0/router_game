@@ -27,7 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flame: ^1.2.1
+  flame: ^1.4.0
 
   flutter:
     sdk: flutter
@@ -39,7 +39,7 @@ dependencies:
 
 
 dev_dependencies:
-  very_good_analysis: ^3.0.1
+  very_good_analysis: ^3.1.0
 
   flutter_test:
     sdk: flutter

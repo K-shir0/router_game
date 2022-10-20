@@ -23,8 +23,7 @@ class TwoNodeOneRouterConnect extends FlameGame
         RouterNode(
           id: const Uuid().v4(),
           interfaces: [],
-        )
-          ..position = event.canvasPosition - Vector2(72, 72) / 2,
+        )..position = event.canvasPosition - Vector2(72, 72) / 2,
       );
 
       routerAddMode = false;
