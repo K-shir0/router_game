@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 
-import 'package:flutter/material.dart';
+import 'package:router_game_f/components/card.dart';
 
 import 'package:router_game_f/components/router_node.dart';
 
@@ -23,16 +23,12 @@ class InterfaceInformation extends PositionComponent with Hoverable {
   }
 
   @override
-  void render(Canvas canvas) {
-    super.render(canvas);
+  Future<void>? onLoad() {
+    super.onLoad();
 
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, width, height),
-        const Radius.circular(6),
-      ),
-      Paint()..color = const Color(0xFFE5E6E6),
-    );
+    add(GameCard()..size = Vector2(width, height));
+
+    return null;
   }
 
   @override

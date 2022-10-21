@@ -185,29 +185,7 @@ class RouterNode extends Node with TapCallbacks {
 
           _hoverInfo.add(
             ColorButton(
-                currentColor: routingItem.color,
-                onTap: (color) {
-                  final newItem = RoutingItem(
-                    color: color ?? Colors.transparent,
-                    outputInterfaceNumber: i,
-                  );
-
-                  routingTable
-                    ..removeWhere(
-                      (element) => element == routingItem || element == newItem,
-                    )
-                    ..add(newItem);
-                })
-              ..position = Vector2(colorButtonWidth, buttonHeight),
-          );
-
-          colorButtonWidth += 28;
-        }
-
-        // 追加用
-        _hoverInfo.add(
-          ColorButton(
-              currentColor: Colors.transparent,
+              currentColor: routingItem.color,
               onTap: (color) {
                 final newItem = RoutingItem(
                   color: color ?? Colors.transparent,
@@ -216,11 +194,33 @@ class RouterNode extends Node with TapCallbacks {
 
                 routingTable
                   ..removeWhere(
-                    (element) => element == newItem,
+                    (element) => element == routingItem || element == newItem,
                   )
                   ..add(newItem);
-              })
-            ..position = Vector2(colorButtonWidth, buttonHeight),
+              },
+            )..position = Vector2(colorButtonWidth, buttonHeight),
+          );
+
+          colorButtonWidth += 28;
+        }
+
+        // 追加用
+        _hoverInfo.add(
+          ColorButton(
+            currentColor: Colors.transparent,
+            onTap: (color) {
+              final newItem = RoutingItem(
+                color: color ?? Colors.transparent,
+                outputInterfaceNumber: i,
+              );
+
+              routingTable
+                ..removeWhere(
+                  (element) => element == newItem,
+                )
+                ..add(newItem);
+            },
+          )..position = Vector2(colorButtonWidth, buttonHeight),
         );
       }
 

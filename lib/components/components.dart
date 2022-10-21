@@ -1,4 +1,5 @@
 export 'package:router_game_f/components/cable.dart';
+export 'package:router_game_f/components/card.dart';
 export 'package:router_game_f/components/interface.dart';
 export 'package:router_game_f/components/node.dart';
 export 'package:router_game_f/components/packet_component.dart';
